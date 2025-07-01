@@ -28,7 +28,7 @@ export default function Home() {
       </p>
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <Link
-          href="https://github.com/your-username/project-forge"
+          href="https://github.com/jisub0906/project-forge"
           className="rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           GitHub에서 보기

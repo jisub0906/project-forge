@@ -47,7 +47,7 @@
 npm install -g supabase pnpm tsx
 
 # 프로젝트 다운로드
-git clone <repository-url>
+git clone https://github.com/jisub0906/project-forge
 cd nextjs-supabase-template
 pnpm install
 ```

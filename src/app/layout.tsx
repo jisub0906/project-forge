@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "2025 Template Team",
-      url: "https://github.com/your-username/template",
+      url: "https://github.com/jisub0906/project-forge",
     },
   ],
   creator: "2025 Template Team",
