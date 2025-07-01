@@ -1,19 +1,19 @@
-# 🏛️ Next.js 15 + Supabase 멀티 프로젝트 템플릿 (2025)
+# 🏛️ Next.js 15 + Supabase 스키마 분리 프로젝트 (2025)
 
-> **🎯 한 번의 설정으로 여러 프로젝트를 안전하게 운영하세요!**  
-> 하나의 Supabase로 무제한 프로젝트 + 비용 90% 절감 + 완전 자동화
+> **🎯 하나의 Supabase로 여러 프로젝트를 안전하게 관리하세요!**  
+> 스키마 자동 주입 시스템으로 프로젝트별 완전 데이터 격리 + 비용 90% 절감
 
 ## ✨ 주요 특징
 
 ### 🎯 **스키마 자동 주입 시스템**
-- **실수 제로**: 코드에서 스키마명을 직접 입력할 필요 없음
-- **환경별 분리**: 개발/스테이징/프로덕션 환경별 독립 스키마
-- **타입 안전성**: TypeScript + Zod로 런타임까지 완벽 보장
+- **코드 수정 없음**: 기존 Supabase 코드를 전혀 수정하지 않아도 됨
+- **자동 스키마 적용**: 환경변수만으로 프로젝트별 스키마 자동 선택
+- **완전 데이터 격리**: 프로젝트간 데이터 혼재 방지
 
 ### 💰 **비용 최적화**
-- **하나의 Supabase 인스턴스**로 여러 프로젝트 운영
-- **데이터 완전 격리**: 프로젝트간 데이터 혼재 방지
-- **독립적 마이그레이션**: 프로젝트별 스키마 관리
+- **하나의 Supabase 인스턴스**로 무제한 프로젝트 운영
+- **독립적 스키마**: 각 프로젝트가 완전히 분리된 데이터베이스 공간 사용
+- **비용 90% 절감**: $25/월로 여러 프로젝트 운영 가능
 
 ### 🚀 **최신 기술 스택**
 - **Next.js 15.3.4** (App Router, Server Components, Server Actions)
@@ -25,109 +25,78 @@
 
 ---
 
-## 📋 목차
+## 🚀 빠른 시작 (5분)
 
-1. [빠른 시작](#-빠른-시작)
-2. [스키마 분리 설정](#-스키마-분리-설정)
-3. [사용법](#-사용법)
-4. [프로젝트 구조](#-프로젝트-구조)
-5. [환경변수 설정](#-환경변수-설정)
-6. [마이그레이션 관리](#-마이그레이션-관리)
-7. [배포 가이드](#-배포-가이드)
-8. [문제해결](#-문제해결)
-
----
-
-## 🚀 3분만에 시작하기
-
-### 1️⃣ 준비하기 (1분)
+### 1️⃣ 프로젝트 설치
 
 ```bash
-# 필수 도구 설치 (한 번만 하면 됨)
-npm install -g supabase pnpm tsx
-
-# 프로젝트 다운로드
-git clone https://github.com/jisub0906/project-forge
-cd nextjs-supabase-template
+# 프로젝트 클론 및 의존성 설치
+git clone https://github.com/your-repo/project-forge
+cd project-forge
 pnpm install
 ```
 
-> 📝 **설치하는 도구들**:
-> - `supabase`: 데이터베이스 관리용
-> - `pnpm`: 빠른 패키지 매니저  
-> - `tsx`: TypeScript 스크립트 실행용
-
-### 2️⃣ Supabase 연결하기 (1분)
+### 2️⃣ 환경변수 설정
 
 ```bash
-# 환경변수 파일 복사
+# 환경변수 파일 생성
 cp .env.example .env.local
 
-# .env.local 파일 열어서 3줄만 수정하세요:
+# .env.local 편집 (필수 3개 항목)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-NEXT_PUBLIC_SUPABASE_SCHEMA=my_awesome_project  # 🎯 원하는 프로젝트명
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+NEXT_PUBLIC_SUPABASE_SCHEMA=my_awesome_project  # �� 원하는 프로젝트명
 ```
 
-> 💡 **팁**: Supabase 대시보드 → Settings → API에서 URL과 Key를 복사하세요!
+### 3️⃣ Supabase에서 스키마 생성
 
-### 3️⃣ 바로 실행하기 (1분)
+**중요**: Supabase 보안 정책으로 인해 스키마는 수동으로 생성해야 합니다.
+
+1. **Supabase Dashboard** → **SQL Editor** 이동
+2. 다음 SQL 실행:
+
+```sql
+-- 스키마 생성
+CREATE SCHEMA IF NOT EXISTS "my_awesome_project";
+
+-- 기본 테이블 생성
+CREATE TABLE IF NOT EXISTS "my_awesome_project".users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "my_awesome_project".profiles (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES "my_awesome_project".users(id) ON DELETE CASCADE,
+  name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS 보안 정책 활성화
+ALTER TABLE "my_awesome_project".users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "my_awesome_project".profiles ENABLE ROW LEVEL SECURITY;
+
+-- 기본 보안 정책
+CREATE POLICY "Users can view own data" ON "my_awesome_project".users
+  FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own data" ON "my_awesome_project".users
+  FOR UPDATE USING (auth.uid() = id);
+```
+
+### 4️⃣ 개발 서버 실행
 
 ```bash
-# 개발 서버 시작 (스키마 자동 생성됨)
 pnpm dev
-
 # 🎉 http://localhost:3000 에서 확인!
 ```
 
-**끝! 이제 여러분의 프로젝트가 독립된 데이터베이스 공간에서 안전하게 실행됩니다.**
-
 ---
 
-## 🏗️ 여러 프로젝트 운영하기
-
-### 💡 이해하기: 어떻게 작동하나요?
-
-기존에는 프로젝트마다 별도의 Supabase 인스턴스가 필요했습니다:
-```
-❌ 기존 방식 (비용 많이 듦)
-프로젝트A → Supabase A ($25/월)
-프로젝트B → Supabase B ($25/월)  
-프로젝트C → Supabase C ($25/월)
-총 비용: $75/월 💸
-```
-
-이제는 하나의 Supabase로 모든 프로젝트를 관리할 수 있습니다:
-```
-✅ 새로운 방식 (비용 90% 절감!)
-프로젝트A → Supabase 하나 ($25/월)
-프로젝트B → 같은 Supabase (무료!)
-프로젝트C → 같은 Supabase (무료!)
-총 비용: $25/월 🎉
-```
-
-### 🎯 실제 사용 예시
-
-```bash
-# 회사 프로젝트들
-📁 company-projects/
-├── ecommerce-site/     # SCHEMA=ecommerce_main
-├── admin-dashboard/    # SCHEMA=admin_panel  
-├── mobile-app-api/     # SCHEMA=mobile_backend
-└── analytics-tool/     # SCHEMA=analytics_db
-
-# 고객별 프로젝트들  
-📁 client-projects/
-├── client-samsung/     # SCHEMA=samsung_portal
-├── client-lg/          # SCHEMA=lg_system
-└── client-kakao/       # SCHEMA=kakao_service
-```
-
-**🔒 보안**: 각 프로젝트는 완전히 독립된 데이터베이스 공간을 가집니다. 절대 섞이지 않아요!
-
----
-
-## 💻 개발하기 (매우 쉬움!)
+## 💻 사용법
 
 ### 🎯 핵심: 코드는 그대로, 스키마만 자동!
 
@@ -147,28 +116,53 @@ export default function UserList() {
 }
 ```
 
-### 🔍 무엇이 바뀌었나요?
+### 🔧 CLI 관리 도구
 
-```typescript
-// ❌ 기존에는 이렇게 매번 스키마를 입력해야 했어요
-const { data } = await supabase.from('users').select('*').schema('project_a');
+```bash
+# 📋 스키마 목록 확인
+pnpm run schema:list
 
-// ✅ 이제는 자동으로 적용됩니다!
-const { data } = await supabase.from('users').select('*');
+# 🏗️ 새 프로젝트 스키마 가이드
+pnpm run schema:create client_samsung
+
+# 🗑️ 프로젝트 스키마 삭제 가이드
+pnpm run schema:drop old_project
+
+# 🔄 현재 프로젝트 초기화
+pnpm run schema:init
 ```
 
-### 🛠️ 고급 기능 (필요할 때만)
+**주의**: CLI 도구는 **가이드**를 제공합니다. 실제 스키마 생성/삭제는 Supabase Dashboard에서 수동으로 진행해야 합니다.
 
-```typescript
-// 현재 어떤 스키마를 사용 중인지 확인
-const supabase = createClient();
-console.log(supabase.getCurrentSchema()); // "my_awesome_project"
+---
 
-// 특별한 경우: 다른 프로젝트 데이터에 접근
-const sharedData = await supabase
-  .withSchema('shared_resources')
-  .from('common_data')
-  .select('*');
+## 🏗️ 여러 프로젝트 운영하기
+
+### 💡 실제 사용 예시
+
+```bash
+# 회사 프로젝트들
+📁 company-projects/
+├── ecommerce-site/     # SCHEMA=ecommerce_main
+├── admin-dashboard/    # SCHEMA=admin_panel  
+├── mobile-app-api/     # SCHEMA=mobile_backend
+└── analytics-tool/     # SCHEMA=analytics_db
+
+# 고객별 프로젝트들  
+📁 client-projects/
+├── client-samsung/     # SCHEMA=samsung_portal
+├── client-lg/          # SCHEMA=lg_system
+└── client-kakao/       # SCHEMA=kakao_service
+```
+
+### 🌍 환경별 스키마 관리
+
+```bash
+# .env.local - 환경별 스키마 설정
+NEXT_PUBLIC_SUPABASE_SCHEMA=my_project                    # 기본
+NEXT_PUBLIC_SUPABASE_SCHEMA_DEV=my_project_dev           # 개발용
+NEXT_PUBLIC_SUPABASE_SCHEMA_STAGING=my_project_staging   # 테스트용  
+NEXT_PUBLIC_SUPABASE_SCHEMA_PROD=my_project_prod         # 운영용
 ```
 
 ---
@@ -195,91 +189,33 @@ src/
 │   ├── middleware.ts     # 미들웨어 (스키마 자동 주입)
 │   ├── migrations.ts     # 스키마별 마이그레이션 도구
 │   └── utils.ts          # 유틸리티 함수
-└── store/                # Zustand 상태 관리 (향후 추가)
+└── scripts/              # CLI 관리 도구
+    ├── schema-create.ts  # 스키마 생성 가이드
+    ├── schema-drop.ts    # 스키마 삭제 가이드
+    ├── schema-init.ts    # 스키마 초기화
+    └── schema-list.ts    # 스키마 목록 조회
 ```
 
 ---
 
-## ⚙️ 고급 설정 (선택사항)
-
-### 🌍 환경별로 다른 스키마 사용하기
-
-개발/스테이징/프로덕션 환경별로 다른 스키마를 사용할 수 있어요:
+## 🎮 개발 명령어
 
 ```bash
-# .env.local
-NEXT_PUBLIC_SUPABASE_SCHEMA=my_project                    # 기본
-NEXT_PUBLIC_SUPABASE_SCHEMA_DEV=my_project_dev           # 개발용
-NEXT_PUBLIC_SUPABASE_SCHEMA_STAGING=my_project_staging   # 테스트용  
-NEXT_PUBLIC_SUPABASE_SCHEMA_PROD=my_project_prod         # 운영용
-```
+# 🚀 개발 서버
+pnpm dev              # Turbopack (빠른 개발 - 권장)
+pnpm dev:webpack      # Webpack (안정성 우선)
 
-### 🔧 추가 서비스 연결하기
+# 🔍 코드 품질
+pnpm type-check       # TypeScript 오류 확인
+pnpm lint            # 코드 스타일 검사
+pnpm build           # 프로덕션 빌드
 
-```bash
-# 이메일 발송 (선택사항)
-RESEND_API_KEY=your_resend_api_key
+# 🎯 스키마 관리
+pnpm run schema:list # 스키마 목록 보기
+pnpm run schema:init # 현재 스키마 초기화
 
-# 결제 시스템 (선택사항)
-STRIPE_SECRET_KEY=your_stripe_secret_key
-
-# 파일 업로드 (선택사항)
-UPLOADTHING_SECRET=your_uploadthing_secret
-
-# 분석 도구 (선택사항)
-NEXT_PUBLIC_GA_ID=your_google_analytics_id
-SENTRY_DSN=your_sentry_dsn
-```
-
-> 💡 **팁**: 이런 추가 설정들은 나중에 필요할 때 추가하세요. 지금은 기본 3개만 있으면 충분해요!
-
----
-
-## 🛠️ 프로젝트 관리 도구
-
-### 📋 간단한 명령어들
-
-```bash
-# 📋 현재 프로젝트 스키마 목록 보기
-pnpm run schema:list
-
-# 🏗️ 새 프로젝트 스키마 만들기
-pnpm run schema:create my_new_project
-
-# 🗑️ 프로젝트 스키마 삭제하기 (주의!)
-pnpm run schema:drop old_project
-
-# 🔄 현재 프로젝트 초기화하기
-pnpm run schema:init
-```
-
-### 🎯 실제 사용 예시
-
-```bash
-# 새 고객 프로젝트 시작
-pnpm run schema:create client_samsung
-# → 환경변수에서 NEXT_PUBLIC_SUPABASE_SCHEMA=client_samsung 로 변경
-
-# 개발 완료 후 스테이징 환경 준비
-pnpm run schema:create client_samsung_staging
-# → 스테이징 서버에서 NEXT_PUBLIC_SUPABASE_SCHEMA=client_samsung_staging
-
-# 프로젝트 완료 후 정리
-pnpm run schema:drop client_samsung_dev
-```
-
-### 🔍 현재 상태 확인하기
-
-```bash
-# 어떤 스키마들이 있는지 확인
-pnpm run schema:list
-
-# 출력 예시:
-# 📋 사용 가능한 스키마 목록:
-# - public (기본)
-# - my_awesome_project ✅ (현재 사용 중)
-# - client_samsung
-# - ecommerce_main
+# ✅ 전체 검증
+pnpm run validate    # 타입체크 + 린트 + 빌드 테스트
 ```
 
 ---
@@ -289,20 +225,17 @@ pnpm run schema:list
 ### Vercel 배포
 
 ```bash
-# Vercel CLI 설치
-npm i -g vercel
-
-# 프로젝트 배포
+# Vercel 배포
 vercel
 
-# 환경변수 설정 (Vercel 대시보드에서)
+# 환경변수 설정 (Vercel 대시보드)
 NEXT_PUBLIC_SUPABASE_URL=your-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
 NEXT_PUBLIC_SUPABASE_SCHEMA=production_schema
 SUPABASE_SERVICE_ROLE_KEY=your-service-key
 ```
 
-### 환경별 배포 전략
+### 환경별 배포
 
 ```bash
 # 개발 환경
@@ -317,99 +250,88 @@ NEXT_PUBLIC_SUPABASE_SCHEMA=project_prod
 
 ---
 
-## 🎮 개발 명령어 모음
+## 🆘 문제 해결
+
+### 🔧 자주 묻는 질문
+
+#### ❓ "스키마를 찾을 수 없습니다" 오류
 
 ```bash
-# 🚀 개발 서버 시작 (권장)
-pnpm dev              # Turbopack (빠른 개발)
-pnpm dev:webpack      # Webpack (안정성 우선)
-pnpm dev:fast         # Turbopack + 최고 속도
-
-# 🔍 코드 검사하기
-pnpm type-check       # TypeScript 오류 확인
-pnpm lint            # 코드 스타일 검사
-
-# 📦 배포 준비하기
-pnpm build           # 프로덕션 빌드
-pnpm start           # 빌드된 앱 실행
-
-# 🧹 유지보수하기
-pnpm clean           # 빌드 캐시 정리
-pnpm reset           # 완전 초기화 (캐시 + 재설치)
-
-# 🎯 프로젝트 관리하기
-pnpm run schema:list # 스키마 목록 보기
-pnpm run schema:init # 현재 스키마 초기화
-
-# ✅ 모든 것 한 번에 검사
-pnpm run validate    # 타입체크 + 린트 + 빌드 테스트
-```
-
-> 💡 **개발 팁**: 
-> - `pnpm dev`: 빠른 개발을 위한 Turbopack 사용 (권장)
-> - `pnpm dev:webpack`: 호환성 문제 시 Webpack 사용
-> - 코드 수정 시 자동으로 반영됩니다!
-
----
-
-## 🆘 문제가 생겼나요?
-
-### 🔧 자주 묻는 질문들
-
-#### ❓ "스키마를 찾을 수 없습니다" 오류가 나요
-```bash
-# 1. 환경변수가 제대로 설정되었는지 확인
+# 1. 환경변수 확인
 echo $NEXT_PUBLIC_SUPABASE_SCHEMA
 
-# 2. 스키마가 실제로 존재하는지 확인
+# 2. Supabase Dashboard에서 스키마 생성 확인
+# 3. 스키마 목록 확인
 pnpm run schema:list
 
-# 3. 스키마 자동 생성
+# 4. 스키마 초기화 가이드 실행
 pnpm run schema:init
 ```
 
-#### ❓ "권한이 없습니다" 오류가 나요
-1. Supabase 대시보드 → Settings → API 이동
-2. `service_role` 키를 복사해서 `.env.local`에 `SUPABASE_SERVICE_ROLE_KEY`로 설정
+#### ❓ "권한이 없습니다" 오류
+
+1. Supabase Dashboard → Settings → API 이동
+2. `service_role` 키를 `.env.local`에 `SUPABASE_SERVICE_ROLE_KEY`로 설정
 3. 개발 서버 재시작: `pnpm dev`
 
-#### ❓ 데이터가 보이지 않아요
-```typescript
-// 브라우저 콘솔에서 현재 스키마 확인
-const supabase = createClient();
-console.log('현재 스키마:', supabase.getCurrentSchema());
+#### ❓ 여러 프로젝트 데이터가 섞임
 
-// 예상한 스키마명과 다르다면 .env.local 파일 확인!
-```
+**절대 섞이지 않습니다!** 각 프로젝트는 완전히 독립된 스키마를 사용합니다.
+- `.env.local`의 `NEXT_PUBLIC_SUPABASE_SCHEMA` 값을 확인하세요
+- 브라우저 콘솔에서 현재 스키마 확인: `console.log(process.env.NEXT_PUBLIC_SUPABASE_SCHEMA)`
 
-#### ❓ 여러 프로젝트 데이터가 섞여요
-**절대 섞이지 않습니다!** 각 프로젝트는 완전히 독립된 스키마를 사용해요.
-혹시 같은 스키마명을 사용하고 있지는 않나요?
+#### ❓ CLI 도구가 실제로 스키마를 생성하지 않음
+
+**정상입니다!** Supabase 보안 정책으로 인해 스키마 생성/삭제는 수동으로만 가능합니다.
+- CLI 도구는 **상세한 가이드**를 제공합니다
+- 실제 작업은 Supabase Dashboard에서 SQL을 복사해서 실행하세요
 
 ### 🚨 응급처치
 
 ```bash
 # 모든 것을 초기화하고 다시 시작
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 pnpm run schema:init
 pnpm dev
-
-# 그래도 안 되면 Supabase 대시보드에서 직접 확인
-# Database → Schema → 여러분의 스키마명이 있는지 확인
 ```
 
 ---
 
-## 📚 추가 리소스
+## 🔒 보안 고려사항
 
-### 공식 문서
-- [Next.js 15 문서](https://nextjs.org/docs)
-- [Supabase 문서](https://supabase.com/docs)
-- [TailwindCSS 4.0 문서](https://tailwindcss.com/docs)
+### RLS (Row Level Security) 설정
 
-### 커뮤니티
-- [Next.js GitHub](https://github.com/vercel/next.js)
-- [Supabase GitHub](https://github.com/supabase/supabase)
-- [Discord 커뮤니티](https://discord.gg/supabase)
+모든 테이블에 RLS를 활성화하고 적절한 정책을 설정하세요:
+
+```sql
+-- RLS 활성화
+ALTER TABLE "your_schema".your_table ENABLE ROW LEVEL SECURITY;
+
+-- 기본 보안 정책
+CREATE POLICY "Users can only see own data" ON "your_schema".your_table
+  FOR SELECT USING (auth.uid() = user_id);
+```
+
+### 환경변수 보안
+
+- **절대** 서비스 롤 키를 클라이언트에 노출하지 마세요
+- `.env.local` 파일은 Git에 커밋하지 마세요
+- 프로덕션에서는 별도의 스키마를 사용하세요
+
+---
+
+## 📚 기술 스택 상세
+
+- **Next.js 15.3.4**: App Router, Server Components, Server Actions
+- **React 19**: useTransition, Suspense, Concurrent Features  
+- **TypeScript**: Strict 모드 활성화
+- **TailwindCSS 4.0**: @theme inline, oklch 색상
+- **Supabase**: SSR 지원, RLS 보안, 스키마 분리
+- **상태관리**: TanStack Query + Zustand
+- **폼**: React Hook Form + Zod 검증
+- **애니메이션**: Framer Motion
+- **UI**: Shadcn/UI + Radix 기반
 
 ---
 
@@ -425,17 +347,24 @@ pnpm dev
 
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+이 프로젝트는 MIT 라이선스 하에 배포됩니다.
 
 ---
 
-## 🙏 감사의 말
+## 📖 학습 리소스
 
-- [Vercel](https://vercel.com) - Next.js 개발 및 호스팅
-- [Supabase](https://supabase.com) - 백엔드 서비스
-- [Tailwind Labs](https://tailwindlabs.com) - TailwindCSS
-- [Shadcn](https://ui.shadcn.com) - UI 컴포넌트 라이브러리
+### 공식 문서
+- [Next.js 15 문서](https://nextjs.org/docs)
+- [Supabase 문서](https://supabase.com/docs)
+- [TailwindCSS 4.0 문서](https://tailwindcss.com/docs)
+
+### 커뮤니티
+- [Next.js GitHub](https://github.com/vercel/next.js)
+- [Supabase GitHub](https://github.com/supabase/supabase)
+- [Discord 커뮤니티](https://discord.gg/supabase)
 
 ---
 
-**🎯 이 템플릿으로 비용을 절감하면서도 안전하고 확장 가능한 멀티 프로젝트를 구축하세요!** 
+**🎯 이 프로젝트로 비용을 절감하면서도 안전하고 확장 가능한 멀티 프로젝트를 구축하세요!**
+
+> **주의**: 이 프로젝트는 Supabase의 보안 정책을 존중하며, 모든 스키마 관리는 Supabase Dashboard를 통해 수동으로 진행됩니다. CLI 도구는 명확한 가이드를 제공하여 실수를 방지합니다.

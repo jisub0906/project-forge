@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+#### **1. 기획 (Planning)**
+* 제품 요구 문서 (PRD)
+* 유저 시나리오 / 유저 플로우
+* 인수 조건 (Acceptance Criteria)
+
+---
+
+#### **2. 개발 명세 (Specification)**
+* 의사코드 (Pseudocode)
+* 데이터베이스 스키마
+* API 명세서
+
+---
+
+#### **3. 기술 환경 (Environment)**
+* 기술 스택 (Tech Stack)
+* 코딩 컨벤션
+* 에러 코드 정의
+
+---
+
+#### **4. 시각 & 경험 (Visual & UX)**
+* 와이어프레임 / 목업 / UI 디자인
+* 디자인 시스템
+
+---
+
+#### **5. 구조 & 품질 (Architecture & Quality)**
+* 시스템 아키텍처
+* 폴더 구조
+* 성능 목표
+* 보안 요구사항
+* 버그 리포트
