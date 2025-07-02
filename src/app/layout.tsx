@@ -3,9 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 // 프로바이더들
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import Link from "next/link";
+import { Database } from "lucide-react";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -139,21 +141,30 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta name="msapplication-TileColor" content="#000000" />
       </head>
       <body className="min-h-screen bg-background font-inter antialiased">
-        {/* React Query Provider */}
+        {/* 글로벌 네비게이션 */}
+        <nav className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
+          <div className="container mx-auto flex items-center justify-between px-6 py-3">
+            <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+              <Database className="h-5 w-5 text-primary" />
+              Project Forge
+            </Link>
+            <div className="flex items-center gap-4 text-sm">
+              <Link href="/docs/get-started" className="hover:text-primary transition-colors">온보딩</Link>
+              <Link href="https://github.com/jisub0906/project-forge" className="hover:text-primary transition-colors">GitHub</Link>
+            </div>
+          </div>
+        </nav>
+        {/* Provider & Main Content */}
         <QueryProvider>
-          {/* Theme Provider */}
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange={false}
           >
-            {/* Main Content */}
             <div className="relative flex min-h-screen flex-col">
               <div className="flex-1">{children}</div>
             </div>
-            
-            {/* Global Toast Notifications */}
             <Toaster 
               position="bottom-right"
               closeButton
@@ -163,7 +174,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
             />
           </ThemeProvider>
         </QueryProvider>
-        
+        {/* 글로벌 푸터 */}
+        <footer className="border-t bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-6 py-6 gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Database className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Project Forge</span>
+            </div>
+            <div className="flex items-center gap-6">
+              <Link href="/docs/get-started" className="hover:text-primary">온보딩</Link>
+              <Link href="https://github.com/jisub0906/project-forge" className="hover:text-primary">GitHub</Link>
+              <span>MIT License</span>
+            </div>
+          </div>
+        </footer>
         {/* Service Worker 등록 (프로덕션에서만) */}
         {process.env.NODE_ENV === "production" && (
           <script
