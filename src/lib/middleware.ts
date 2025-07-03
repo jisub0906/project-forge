@@ -1,29 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { env, getCurrentSchema } from "./env";
+import { getSupabaseUrl, getSupabaseAnonKey } from "./env";
 
 /**
- * 2025년 완벽한 미들웨어 Supabase 클라이언트 - 스키마 분리 지원
- * - 자동 스키마 주입
- * - 타입 안전성 보장
- * - 실수 방지 구조
+ * 🚀 Project Forge 2025 - 초보자 친화적인 미들웨어 Supabase 클라이언트
+ * 표준 Supabase 미들웨어로 모든 기능 사용 가능
  */
 
-// 타입 정의
-interface RpcOptions {
-  count?: 'exact' | 'planned' | 'estimated';
-  head?: boolean;
-}
-
-interface RpcArgs {
-  [key: string]: unknown;
-}
-
 /**
- * 미들웨어용 Supabase 클라이언트 생성 (스키마 자동 주입)
+ * 미들웨어용 Supabase 클라이언트 생성
  * 
- * @description Next.js 미들웨어에서 사용하는 Supabase 클라이언트
- * 현재 프로젝트의 스키마가 자동으로 적용됩니다.
+ * @description Next.js 미들웨어에서 사용하는 표준 Supabase 클라이언트
  * 
  * @param {NextRequest} request - Next.js 요청 객체
  * @returns {{ supabase: SupabaseClient, response: NextResponse }} Supabase 클라이언트와 응답 객체
@@ -35,15 +22,18 @@ interface RpcArgs {
  * export async function middleware(request: NextRequest) {
  *   const { supabase, response } = createClient(request);
  *   
- *   // 자동으로 현재 프로젝트 스키마가 적용됨
+ *   // 표준 Supabase 사용법
  *   const { data: { user } } = await supabase.auth.getUser();
+ *   
+ *   if (!user) {
+ *     return NextResponse.redirect(new URL('/auth/login', request.url));
+ *   }
+ *   
  *   return response;
  * }
  * ```
  */
 export const createClient = (request: NextRequest) => {
-  const currentSchema = getCurrentSchema();
-
   // Create an unmodified response
   let supabaseResponse = NextResponse.next({
     request: {
@@ -51,9 +41,9 @@ export const createClient = (request: NextRequest) => {
     },
   });
 
-  const client = createServerClient(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  const supabase = createServerClient(
+    getSupabaseUrl(),
+    getSupabaseAnonKey(),
     {
       cookies: {
         getAll() {
@@ -79,46 +69,11 @@ export const createClient = (request: NextRequest) => {
     }
   );
 
-  // 스키마 자동 주입 래퍼 객체 생성
-  const schemaAwareClient = {
-    // 기본 클라이언트 메서드들 (스키마와 무관한 기능들)
-    auth: client.auth,
-    storage: client.storage,
-    realtime: client.realtime,
-    
-    // 스키마 자동 적용 테이블 접근
-    from: (table: string) => client.schema(currentSchema).from(table),
-    
-    // RPC 호출 (스키마 자동 적용)
-    rpc: (fn: string, args?: RpcArgs, options?: RpcOptions) => {
-      return client.schema(currentSchema).rpc(fn, args, options);
-    },
-    
-    // 원본 클라이언트 접근 (특별한 경우에만 사용)
-    _raw: client,
-    
-    // 현재 사용 중인 스키마명 확인
-    getCurrentSchema: () => currentSchema,
-    
-    // 다른 스키마로 임시 접근 (특별한 경우에만 사용)
-    withSchema: (schema: string) => ({
-      from: (table: string) => client.schema(schema).from(table),
-      rpc: (fn: string, args?: RpcArgs, options?: RpcOptions) => {
-        return client.schema(schema).rpc(fn, args, options);
-      },
-    }),
-  };
-
   return {
-    supabase: schemaAwareClient,
+    supabase,
     response: supabaseResponse,
   };
 };
-
-/**
- * 스키마 자동 주입 미들웨어 클라이언트 타입
- */
-export type SchemaAwareSupabaseMiddlewareClient = ReturnType<typeof createClient>['supabase'];
 
 /**
  * 미들웨어에서 사용자 인증 상태 확인
@@ -162,3 +117,8 @@ export const updateSession = async (request: NextRequest) => {
     };
   }
 };
+
+/**
+ * Supabase 미들웨어 클라이언트 타입
+ */
+export type SupabaseMiddlewareClient = ReturnType<typeof createClient>['supabase'];

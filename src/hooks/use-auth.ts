@@ -5,22 +5,26 @@ import { useRouter } from "next/navigation";
 import type { AuthError, AuthChangeEvent, User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/components/providers/query-provider";
 
 /**
- * 2025년 완벽한 인증 훅 - 스키마 분리 지원
- * - Supabase Auth 통합
+ * 🚀 Project Forge 2025 - 초보자 친화적인 인증 훅
+ * - 표준 Supabase Auth 통합
  * - React Query 캐싱
  * - 자동 리다이렉트
  * - 타입 안전성 보장
- * - 스키마 자동 주입
  */
+
+// 쿼리 키 정의
+const authQueryKeys = {
+  all: ['auth'] as const,
+  user: () => [...authQueryKeys.all, 'user'] as const,
+  session: () => [...authQueryKeys.all, 'session'] as const,
+} as const;
 
 // 타입 정의
 interface AuthData {
   user: User | null;
   session: Session | null;
-  schema: string;
 }
 
 interface SignUpOptions {
@@ -39,25 +43,21 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const supabase = createClient();
   
-  // 현재 사용 중인 스키마명 확인 (디버깅용)
-  const currentSchema = supabase.getCurrentSchema();
-  
-  // 현재 사용자 정보 쿼리 (스키마 자동 적용)
+  // 현재 사용자 정보 쿼리
   const {
     data: authData,
     isLoading: loading,
     error: queryError,
   } = useQuery({
-    queryKey: queryKeys.user("current"),
+    queryKey: authQueryKeys.user(),
     queryFn: async (): Promise<AuthData> => {
-      // 인증은 스키마와 무관하게 동작
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) throw userError;
       
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
       
-      return { user, session, schema: currentSchema };
+      return { user, session };
     },
     staleTime: 5 * 60 * 1000, // 5분
     retry: 1,
@@ -78,7 +78,7 @@ export function useAuth() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user("current") });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user() });
       router.push("/dashboard");
     },
   });
@@ -99,7 +99,7 @@ export function useAuth() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user("current") });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user() });
     },
   });
 
@@ -145,7 +145,7 @@ export function useAuth() {
     } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent) => {
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
         // 인증 상태 변경 시 쿼리 무효화
-        queryClient.invalidateQueries({ queryKey: queryKeys.user("current") });
+        queryClient.invalidateQueries({ queryKey: authQueryKeys.user() });
       }
     });
 
@@ -158,9 +158,6 @@ export function useAuth() {
     session,
     loading,
     error,
-    
-    // 스키마 정보 (디버깅용)
-    currentSchema,
     
     // 인증 상태 확인
     isAuthenticated: !!user,
@@ -205,7 +202,7 @@ export function useRequireAuth() {
 }
 
 /**
- * 이미 로그인한 사용자를 다른 페이지로 리다이렉트하는 훅
+ * 이미 인증된 사용자를 리다이렉트하는 훅
  * 로그인/회원가입 페이지에서 사용
  */
 export function useRedirectIfAuthenticated() {

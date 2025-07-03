@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 /**
- * 2025년 완벽한 TanStack Query 설정
+ * 🚀 Project Forge 2025 - 초보자 친화적인 TanStack Query 설정
  * - React 19 Concurrent Features 지원
  * - 자동 재시도 및 백그라운드 업데이트
  * - 개발 도구 통합
@@ -89,27 +89,4 @@ export function QueryProvider({ children }: QueryProviderProps) {
  */
 export function getServerQueryClient() {
   return makeQueryClient();
-}
-
-/**
- * 쿼리 키 팩토리 - 일관된 쿼리 키 관리
- */
-export const queryKeys = {
-  all: ['queries'] as const,
-  
-  // 사용자 관련
-  users: () => [...queryKeys.all, 'users'] as const,
-  user: (id: string) => [...queryKeys.users(), id] as const,
-  userProfile: (id: string) => [...queryKeys.user(id), 'profile'] as const,
-  
-  // 일반적인 리스트/상세 패턴
-  lists: () => [...queryKeys.all, 'lists'] as const,
-  list: (filters: Record<string, unknown>) => [...queryKeys.lists(), { filters }] as const,
-  details: () => [...queryKeys.all, 'details'] as const,
-  detail: (id: string) => [...queryKeys.details(), id] as const,
-  
-  // AI 관련
-  ai: () => [...queryKeys.all, 'ai'] as const,
-  aiChat: (chatId: string) => [...queryKeys.ai(), 'chat', chatId] as const,
-  aiSuggestions: (context: string) => [...queryKeys.ai(), 'suggestions', context] as const,
-} as const; 
+} 

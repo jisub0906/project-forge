@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Database, BookOpen, Zap, Shield, Users, DollarSign, Code2, Settings, HelpCircle } from "lucide-react";
+import { Database, BookOpen, Zap, Shield, Users, Bot, Code2, Settings, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,19 +10,19 @@ export default function HomePage() {
       {/* 히어로 섹션 */}
       <header className="container mx-auto px-6 py-12 text-center">
         <div className="mx-auto max-w-3xl">
-          <Badge variant="secondary" className="mb-4">2025 Template · Next.js 15 · Supabase · TailwindCSS 4</Badge>
+          <Badge variant="secondary" className="mb-4">2025 Template · Next.js 15 · Supabase MCP Server · TailwindCSS 4</Badge>
           <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-6xl">
             Project Forge <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">2025 Template</span>
           </h1>
           <p className="mb-8 text-lg text-muted-foreground sm:text-xl">
-            멀티 프로젝트, 비용 90% 절감, 실전 온보딩까지<br />
-            <span className="font-semibold text-primary">초보자도 실수 없이 시작하는 완벽한 웹앱 템플릿</span>
+            AI와 함께하는 새로운 개발 경험<br />
+            <span className="font-semibold text-primary">Supabase MCP Server로 10배 빠른 풀스택 개발</span>
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild>
               <Link href="/docs/get-started">
                 <BookOpen className="mr-2 h-5 w-5" />
-                5분만에 시작하기
+                3분만에 시작하기
               </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
@@ -38,55 +38,54 @@ export default function HomePage() {
       {/* 템플릿 구조/철학 요약 */}
       <section className="container mx-auto px-6 py-12">
         <div className="mb-8 text-center">
-          <h2 className="mb-2 text-2xl font-bold">템플릿 구조 & 철학</h2>
-          <p className="text-muted-foreground">폴더 구조, 명명 규칙, 타입/상태/보안까지 실전 원칙을 모두 내장</p>
+          <h2 className="mb-2 text-2xl font-bold">AI 기반 개발 워크플로우</h2>
+          <p className="text-muted-foreground">Supabase MCP Server와 완벽 통합된 차세대 개발 환경</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle>폴더 구조</CardTitle>
-              <CardDescription>실전/교육/확장 모두 OK</CardDescription>
+              <CardTitle>자연어 데이터베이스 관리</CardTitle>
+              <CardDescription>복잡한 SQL 없이 AI와 대화로</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs bg-muted rounded p-3 overflow-x-auto">
+                <div className="text-blue-600 mb-1">👤 You:</div>
+                <div className="mb-2">"사용자 테이블을 만들고 기본 RLS 정책을 설정해줘"</div>
+                <div className="text-green-600 mb-1">🤖 AI:</div>
+                <div>✅ 테이블 생성 완료<br />✅ 보안 정책 적용 완료</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>실시간 스키마 관리</CardTitle>
+              <CardDescription>브랜치 기반 개발 환경</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm list-disc pl-4 space-y-1">
+                <li>개발/스테이징/프로덕션 분리</li>
+                <li>마이그레이션 자동화</li>
+                <li>롤백 및 브랜치 관리</li>
+                <li>실시간 스키마 동기화</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>완벽한 타입 안전성</CardTitle>
+              <CardDescription>Zod + TypeScript + AI</CardDescription>
             </CardHeader>
             <CardContent>
               <pre className="text-xs bg-muted rounded p-3 overflow-x-auto">
-{`src/
-├── app/         # Next.js App Router
-├── components/  # UI, Provider, Common
-├── hooks/       # 커스텀 훅
-├── lib/         # Supabase, env, 스키마, 유틸
-│   └── schemas/ # Zod 스키마
-`}
+{`// AI가 자동 생성
+export const userSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  created_at: z.date()
+});
+
+type User = z.infer<typeof userSchema>;`}
               </pre>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>핵심 원칙</CardTitle>
-              <CardDescription>AXIOM Protocol</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm list-disc pl-4 space-y-1">
-                <li>단일 책임 원칙</li>
-                <li>Zod-First 타입</li>
-                <li>상태 분류(로컬/전역/서버/URL)</li>
-                <li>보안/스키마 분리</li>
-                <li>UI/UX 일관성</li>
-                <li>실전 온보딩</li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>실전 적용법</CardTitle>
-              <CardDescription>누구나 실수 없이 확장</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm list-disc pl-4 space-y-1">
-                <li>컴포넌트: <span className="font-mono">PascalCase.tsx</span></li>
-                <li>훅: <span className="font-mono">useCamelCase.ts</span></li>
-                <li>스키마: <span className="font-mono">kebab-case-schema.ts</span></li>
-                <li>Server Action: <span className="font-mono">kebab-case.ts</span></li>
-              </ul>
             </CardContent>
           </Card>
         </div>
@@ -96,31 +95,43 @@ export default function HomePage() {
       <section className="container mx-auto px-6 py-12">
         <div className="mb-8 text-center">
           <h2 className="mb-2 text-2xl font-bold">주요 기능 & 강점</h2>
-          <p className="text-muted-foreground">실무에서 바로 통하는 기능과 보안, 비용 절감까지</p>
+          <p className="text-muted-foreground">AI와 함께하는 차세대 개발 경험</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900 mb-2">
-                <Database className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <Bot className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <CardTitle>스키마 자동 주입</CardTitle>
-              <CardDescription>환경변수만 바꿔도 프로젝트별 데이터 완전 분리</CardDescription>
+              <CardTitle>AI 기반 데이터베이스</CardTitle>
+              <CardDescription>자연어로 스키마 생성, 마이그레이션, 보안 정책 관리</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="rounded bg-muted p-2 text-xs font-mono">supabase.from('users').select('*')<br /><span className="text-muted-foreground">// → 자동으로 current_schema.users</span></div>
+              <div className="rounded bg-muted p-2 text-xs">
+                <div className="text-blue-600 mb-1">"블로그 시스템을 만들어줘"</div>
+                <div className="text-muted-foreground">→ posts, comments, users 테이블 자동 생성</div>
+              </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900 mb-2">
-                <DollarSign className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <Zap className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
-              <CardTitle>비용 90% 절감</CardTitle>
-              <CardDescription>하나의 Supabase로 무제한 프로젝트 운영</CardDescription>
+              <CardTitle>10배 빠른 개발</CardTitle>
+              <CardDescription>복잡한 설정 없이 바로 시작하는 풀스택 개발</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-xs">기존 3개 프로젝트 → <span className="text-red-600">$75/월</span><br />Project Forge → <span className="text-green-600">$25/월</span></div>
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span>기존 방식</span>
+                  <span className="text-red-600">2-3일</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>MCP Server</span>
+                  <span className="text-green-600">30분</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -128,30 +139,30 @@ export default function HomePage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900 mb-2">
                 <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
-              <CardTitle>완전 데이터 격리</CardTitle>
-              <CardDescription>RLS 보안 정책 자동 적용, 권한 기반 접근 제어</CardDescription>
+              <CardTitle>자동화된 보안</CardTitle>
+              <CardDescription>AI가 RLS 정책과 권한 관리를 자동으로 설정</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="text-xs list-disc pl-4 space-y-1">
-                <li>스키마별 완전 분리</li>
-                <li>RLS 정책 자동 적용</li>
+                <li>RLS 정책 자동 생성</li>
                 <li>권한 기반 접근 제어</li>
+                <li>보안 취약점 자동 탐지</li>
               </ul>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900 mb-2">
-                <Zap className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                <Database className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
-              <CardTitle>최신 기술 스택</CardTitle>
-              <CardDescription>Next.js 15, React 19, TailwindCSS 4, Shadcn/UI, Framer Motion</CardDescription>
+              <CardTitle>브랜치 기반 개발</CardTitle>
+              <CardDescription>개발/스테이징/프로덕션 환경 완벽 분리</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="text-xs list-disc pl-4 space-y-1">
-                <li>App Router, Server Actions</li>
-                <li>Strict TypeScript</li>
-                <li>실전 디자인 시스템</li>
+                <li>독립적인 개발 환경</li>
+                <li>안전한 배포 파이프라인</li>
+                <li>실시간 동기화</li>
               </ul>
             </CardContent>
           </Card>
@@ -160,8 +171,8 @@ export default function HomePage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-100 dark:bg-cyan-900 mb-2">
                 <Users className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
               </div>
-              <CardTitle>실전 온보딩</CardTitle>
-              <CardDescription>누구나 따라할 수 있는 단계별 가이드 & FAQ</CardDescription>
+              <CardTitle>초보자 친화적</CardTitle>
+              <CardDescription>복잡한 설정 없이 바로 시작</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild size="sm" className="w-full">
@@ -176,11 +187,86 @@ export default function HomePage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-900 mb-2">
                 <Settings className="h-6 w-6 text-gray-600 dark:text-gray-400" />
               </div>
-              <CardTitle>실무형 CLI/마이그레이션</CardTitle>
-              <CardDescription>스키마 생성/초기화/조회/삭제까지 자동화</CardDescription>
+              <CardTitle>최신 기술 스택</CardTitle>
+              <CardDescription>Next.js 15, React 19, TailwindCSS 4, Shadcn/UI</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-xs font-mono">pnpm run schema:init<br />pnpm run schema:list<br />pnpm run schema:create &lt;name&gt;</div>
+              <div className="text-xs space-y-1">
+                <div>• App Router, Server Actions</div>
+                <div>• Strict TypeScript</div>
+                <div>• Framer Motion</div>
+                <div>• 실전 디자인 시스템</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* MCP Server 비교 */}
+      <section className="container mx-auto px-6 py-12">
+        <div className="mb-8 text-center">
+          <h2 className="mb-2 text-2xl font-bold">기존 방식 vs MCP Server</h2>
+          <p className="text-muted-foreground">개발 경험이 완전히 달라집니다</p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-red-600">😰 기존 방식</CardTitle>
+              <CardDescription>복잡하고 시간이 오래 걸리는 전통적인 개발</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500">❌</span>
+                  <span>복잡한 SQL 직접 작성</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500">❌</span>
+                  <span>수동 마이그레이션 관리</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500">❌</span>
+                  <span>보안 정책 수동 설정</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500">❌</span>
+                  <span>환경별 설정 복잡</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500">❌</span>
+                  <span>높은 학습 곡선</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-green-600">🚀 MCP Server</CardTitle>
+              <CardDescription>AI와 함께하는 차세대 개발 경험</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500">✅</span>
+                  <span>자연어로 스키마 생성</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500">✅</span>
+                  <span>AI 기반 마이그레이션</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500">✅</span>
+                  <span>보안 정책 자동화</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500">✅</span>
+                  <span>브랜치 기반 환경 관리</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500">✅</span>
+                  <span>즉시 시작 가능</span>
+                </li>
+              </ul>
             </CardContent>
           </Card>
         </div>
@@ -189,14 +275,13 @@ export default function HomePage() {
       {/* 실전 온보딩 요약 */}
       <section className="container mx-auto px-6 py-12">
         <div className="mb-8 text-center">
-          <h2 className="mb-2 text-2xl font-bold">1분만에 시작하기</h2>
-          <p className="text-muted-foreground">클론 → 설치 → 환경 → 스키마 → 실행, 5단계로 끝!</p>
+          <h2 className="mb-2 text-2xl font-bold">3분만에 시작하기</h2>
+          <p className="text-muted-foreground">클론 → 설치 → 환경 → 실행, 4단계로 끝!</p>
         </div>
         <ol className="mx-auto max-w-2xl space-y-2 text-sm list-decimal pl-6">
           <li>프로젝트 클론: <span className="font-mono">git clone ...</span></li>
           <li>의존성 설치: <span className="font-mono">pnpm install</span></li>
           <li>환경변수 설정: <span className="font-mono">cp .env.example .env.local</span></li>
-          <li>스키마 생성/초기화: <span className="font-mono">CREATE SCHEMA ...</span>, <span className="font-mono">pnpm run schema:init</span></li>
           <li>개발 서버 실행: <span className="font-mono">pnpm dev</span></li>
         </ol>
         <div className="mt-4 text-center">
@@ -212,49 +297,51 @@ export default function HomePage() {
       <section className="container mx-auto px-6 py-12">
         <div className="mb-8 text-center">
           <h2 className="mb-2 text-2xl font-bold">FAQ & 트러블슈팅</h2>
-          <p className="text-muted-foreground">실전에서 자주 만나는 문제, 바로 해결!</p>
+          <p className="text-muted-foreground">AI와 함께 개발하면서 자주 묻는 질문들</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900 mb-2">
-                <HelpCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-              </div>
-              <CardTitle>Supabase 연결 오류</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-xs list-disc pl-4 space-y-1">
-                <li>.env.local의 URL/Key/스키마명 확인</li>
-                <li>스키마를 먼저 생성했는지 확인</li>
-                <li>네트워크/방화벽 점검</li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900 mb-2">
-                <HelpCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-              </div>
-              <CardTitle>스키마 초기화 실패</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-xs list-disc pl-4 space-y-1">
-                <li>Supabase SQL Editor에서 CREATE SCHEMA 실행</li>
-                <li>환경변수의 스키마명이 실제로 존재하는지 확인</li>
-              </ul>
-            </CardContent>
-          </Card>
           <Card>
             <CardHeader>
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900 mb-2">
                 <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <CardTitle>UI/스타일 문제</CardTitle>
+              <CardTitle>MCP Server 연결 방법</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="text-xs list-disc pl-4 space-y-1">
-                <li>TailwindCSS 4.0 설치/적용 확인</li>
-                <li>globals.css가 App Router에 import되어 있는지 확인</li>
+                <li>Cursor/Claude에서 자동 연결</li>
+                <li>환경변수 설정 확인</li>
+                <li>Supabase 프로젝트 활성화</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900 mb-2">
+                <HelpCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <CardTitle>AI 명령어 사용법</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-xs list-disc pl-4 space-y-1">
+                <li>"테이블을 만들어줘"</li>
+                <li>"보안 정책을 설정해줘"</li>
+                <li>"마이그레이션을 실행해줘"</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900 mb-2">
+                <HelpCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <CardTitle>브랜치 관리</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-xs list-disc pl-4 space-y-1">
+                <li>개발 브랜치 생성</li>
+                <li>프로덕션 배포</li>
+                <li>롤백 및 복구</li>
               </ul>
             </CardContent>
           </Card>
@@ -269,7 +356,7 @@ export default function HomePage() {
       {/* 커뮤니티/문의/기여 안내 */}
       <section className="container mx-auto px-6 py-12 text-center">
         <h2 className="mb-2 text-2xl font-bold">문의 · 기여 · 커뮤니티</h2>
-        <p className="mb-4 text-muted-foreground">오픈소스 협업, 피드백, 질문 모두 환영합니다!</p>
+        <p className="mb-4 text-muted-foreground">AI와 함께하는 개발 경험을 공유해주세요!</p>
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
           <Button asChild variant="outline">
             <Link href="https://github.com/jisub0906/project-forge/issues">GitHub 이슈 남기기</Link>
