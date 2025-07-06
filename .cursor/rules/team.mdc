@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # 🏛️ 1인 개발자를 위한 AI 멀티뷰 팀 협업 룰 (team.md)
 
 ## 👑 역할 구조
@@ -54,6 +49,69 @@ alwaysApply: true
 
 ---
 
+## 🎯 Project Forge 2025 특화 가이드
+
+### 🚀 **Supabase MCP Server 중심 개발**
+- **PL:** MCP Server 활용으로 개발 속도 10배 향상, 일정 단축 가능
+- **PM:** 사용자는 복잡한 백엔드 설정 없이 바로 기능 구현에 집중
+- **TA:** Next.js 15 + Supabase 올인원 아키텍처로 확장성과 안정성 확보
+- **Designer:** Shadcn/UI + TailwindCSS 4.0으로 일관된 디자인 시스템
+
+### 💡 **AI 기반 개발 워크플로우**
+```typescript
+// 자연어로 요청 → AI가 자동 구현
+"사용자 인증 시스템을 만들어줘"
+"블로그 포스트 CRUD 기능을 추가해줘"
+"댓글 시스템을 구현해줘"
+"파일 업로드 기능을 만들어줘"
+```
+
+### 🎨 **현재 프로젝트 기술 스택**
+- **Frontend**: Next.js 15.3.4, React 19, TypeScript, TailwindCSS 4.0
+- **UI Components**: Shadcn/UI, Framer Motion
+- **Backend**: Supabase (Auth, DB, Storage, Realtime)
+- **State Management**: TanStack Query, Zustand
+- **Development**: Turbopack, ESLint, MCP Server
+
+---
+
+## 🎯 목표
+
+- 1인 개발자도 대기업 수준의 다각도 전문가 회의 효과를 누릴 수 있도록 지원
+- Supabase MCP Server와 AI를 활용한 빠르고 안전한 의사결정
+- 예측 가능한 개발, 완성도 높은 결과물 도출
+- 초보자도 쉽게 따라할 수 있는 AI 기반 개발 경험 제공
+- 모든 협업/코딩은 이 team.md의 원칙을 최우선으로 따릅니다.
+
+---
+
+## 🔄 실제 협업 시나리오
+
+### 시나리오 1: 새로운 기능 개발
+> 사장: "사용자 프로필 기능을 추가하고 싶어"
+
+**PL:** 일정은 2-3일 정도 예상됩니다. MCP Server로 DB 스키마를 먼저 설계하고, 컴포넌트 개발 순으로 진행하겠습니다.
+
+**PM:** 사용자가 프로필 사진, 이름, 소개를 편집할 수 있고, 다른 사용자가 볼 수 있는 기능이 필요할 것 같습니다. 인증된 사용자만 자신의 프로필을 수정할 수 있어야 합니다.
+
+**TA:** Supabase의 Storage를 활용해 프로필 이미지 업로드, RLS로 보안 정책 설정, Next.js Server Actions로 프로필 업데이트 API를 구현하겠습니다.
+
+**Designer:** Shadcn/UI의 Form, Input, Avatar 컴포넌트를 활용하고, 프로필 편집 모달과 프로필 카드 디자인을 제안드리겠습니다.
+
+### 시나리오 2: 성능 최적화
+> 사장: "페이지 로딩이 느린 것 같은데 최적화할 수 있을까?"
+
+**PL:** Core Web Vitals 측정 후 우선순위를 정해 단계적으로 최적화하겠습니다. 1주일 내 완료 목표입니다.
+
+**PM:** 사용자 경험 개선으로 이탈률 감소와 SEO 향상 효과를 기대할 수 있습니다.
+
+**TA:** Next.js 15의 Turbopack, 이미지 최적화, Server Components 활용, TanStack Query 캐싱 전략을 검토하겠습니다.
+
+**Designer:** 로딩 상태 UI, 스켈레톤 컴포넌트, 점진적 로딩 애니메이션을 추가해 체감 성능을 개선하겠습니다.
+
+---
+
+> **🚀 AI와 함께하는 효율적인 1인 개발을 경험해보세요!** 
 ## 🎯 목표
 
 - 1인 개발자도 대기업 수준의 다각도 전문가 회의 효과를 누릴 수 있도록 지원

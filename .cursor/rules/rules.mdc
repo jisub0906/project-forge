@@ -1,13 +1,8 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # 🏛️ AXIOM 프로토콜: 완벽한 AI 협업을 위한 최종 커서룰 (v2025.2)
 
 ## 📋 소개
 
-이 문서는 **Next.js 15.3.4, React 19, TypeScript, Supabase, TailwindCSS 4.0, Shadcn/UI, Framer Motion** 스택에서 Cursor AI의 잠재력을 100% 활용하기 위한 최종 가이드입니다. 이 프로토콜은 단순한 코딩 스타일 가이드를 넘어, 인간 개발자와 AI가 하나의 지성처럼 동작하기 위한 운영체제(Operating System)입니다. 모든 원칙은 코드에서 **모호성**을 제거하고 **예측 가능성**을 극대화하여, AI의 코드 이해, 생성, 수정 능력을 이론적 최대치까지 끌어올리는 데 초점을 맞춥니다.
+이 문서는 **Next.js 15.3.4, React 19, TypeScript, Supabase MCP Server, TailwindCSS 4.0, Shadcn/UI, Framer Motion** 스택에서 Cursor AI의 잠재력을 100% 활용하기 위한 최종 가이드입니다. 이 프로토콜은 단순한 코딩 스타일 가이드를 넘어, 인간 개발자와 AI가 하나의 지성처럼 동작하기 위한 운영체제(Operating System)입니다. 모든 원칙은 코드에서 **모호성**을 제거하고 **예측 가능성**을 극대화하여, AI의 코드 이해, 생성, 수정 능력을 이론적 최대치까지 끌어올리는 데 초점을 맞춥니다.
 
 ---
 
@@ -26,46 +21,34 @@ alwaysApply: true
 - 하나의 파일에 여러 컴포넌트나 훅을 혼재하는 행위는 컨텍스트 오염으로 간주
 - 파일당 **250줄** 제한, 초과 시 즉시 분리
 
-### 1.2 Next.js 15 App Router + 스키마 분리 구조 (현재 프로젝트)
+### 1.2 Next.js 15 App Router 구조 (현재 프로젝트)
 ```
 src/
-├── app/                    # Next.js 15 App Router 페이지
+├── app/                    # Next.js 15 App Router
 │   ├── globals.css        # TailwindCSS 4.0 설정
 │   ├── layout.tsx         # 루트 레이아웃
-│   └── page.tsx           # 홈페이지
+│   ├── page.tsx           # 홈페이지
+│   └── docs/              # 문서 페이지
 ├── components/
-│   ├── ui/                # Shadcn/UI 기본 컴포넌트 (수정 금지)
-│   │   ├── button.tsx     # 기본 버튼 컴포넌트
-│   │   ├── card.tsx       # 카드 컴포넌트
-│   │   ├── dialog.tsx     # 다이얼로그 컴포넌트
-│   │   └── ...           # 기타 UI 컴포넌트들
-│   ├── providers/         # Context 프로바이더들
-│   │   ├── query-provider.tsx  # TanStack Query 프로바이더
-│   │   └── theme-provider.tsx  # 테마 프로바이더
+│   ├── ui/                # Shadcn/UI 컴포넌트 (수정 금지)
+│   ├── auth/              # 인증 관련 컴포넌트
+│   ├── providers/         # Context 프로바이더
 │   └── common/            # 공통 컴포넌트
-│       └── loading.tsx    # 로딩 컴포넌트
 ├── hooks/                 # 커스텀 훅 (use- 접두사)
-│   └── use-auth.ts       # 인증 관련 훅
-├── lib/
+├── lib/                   # 핵심 라이브러리
 │   ├── schemas/           # Zod 스키마 정의
-│   │   └── auth.ts       # 인증 스키마
-│   ├── env.ts            # 환경변수 검증 (스키마 분리 지원)
-│   ├── client.ts         # 클라이언트 Supabase (스키마 자동 주입)
-│   ├── server.ts         # 서버 Supabase (스키마 자동 주입)
-│   ├── middleware.ts     # 미들웨어 (스키마 자동 주입)
-│   ├── migrations.ts     # 스키마별 마이그레이션 도구
-│   └── utils.ts          # 유틸리티 함수
-├── scripts/              # CLI 도구들
-│   ├── schema-init.ts    # 스키마 초기화 스크립트
-│   └── schema-list.ts    # 스키마 목록 조회 스크립트
-└── store/                # Zustand 글로벌 상태 (향후 추가)
+│   ├── client.ts          # 클라이언트 Supabase
+│   ├── server.ts          # 서버 Supabase
+│   ├── env.ts             # 환경변수 검증
+│   └── utils.ts           # 유틸리티 함수
+└── middleware.ts          # Next.js 미들웨어
 ```
 
 ### 1.3 명명 규칙 (AI 최적화)
 - **컴포넌트**: `UserProfile.tsx` (PascalCase)
 - **Server Actions**: `create-user.ts` (kebab-case)
 - **훅**: `useUserProfile.ts` (camelCase + use 접두사)
-- **스키마**: `user-schema.ts` (kebab-case + schema 접미사)
+- **스키마**: `auth.ts` (kebab-case)
 - **타입**: `User.ts` (PascalCase)
 - **상수**: `API_ENDPOINTS.ts` (SCREAMING_SNAKE_CASE)
 
@@ -156,12 +139,12 @@ export function useUsers() {
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { userSchema } from '@/lib/schemas/auth';
+import { signUpSchema } from '@/lib/schemas/auth';
 import { createClient } from '@/lib/server';
 
 export async function createUser(formData: FormData) {
   // 1. 입력 검증 (Zod)
-  const validatedFields = userSchema.safeParse({
+  const validatedFields = signUpSchema.safeParse({
     email: formData.get('email'),
     password: formData.get('password'),
   });
@@ -174,7 +157,7 @@ export async function createUser(formData: FormData) {
   }
 
   // 2. 데이터베이스 작업 (Supabase)
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email: validatedFields.data.email,
     password: validatedFields.data.password,
@@ -243,7 +226,7 @@ import { createClient } from '@/lib/server';
 import { userProfileSchema, type UserProfile } from '@/lib/schemas/auth';
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { data: { user }, error } = await supabase.auth.getUser();
   
@@ -254,7 +237,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
 }
 
 export async function getUserSession() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { data: { session }, error } = await supabase.auth.getSession();
   
@@ -524,7 +507,7 @@ export function AnimatedPage({ children, className }: AnimatedPageProps) {
 ```typescript
 // app/users/page.tsx (서버 컴포넌트 - 기본)
 import { Suspense } from 'react';
-import { getUserProfiles } from '@/lib/database/users';
+import { getUserProfiles } from '@/lib/queries/users';
 import { UserList } from './_components/user-list';
 import { UserListSkeleton } from './_components/user-list-skeleton';
 
@@ -551,7 +534,7 @@ async function UserListAsync() {
 
 import { motion } from 'framer-motion';
 import { staggerChildren, slideInVariants } from '@/lib/animations';
-import type { UserProfile } from '@/lib/schemas/user-schema';
+import type { UserProfile } from '@/lib/schemas/auth';
 
 interface UserListProps {
   users: UserProfile[];
@@ -581,7 +564,7 @@ export function UserList({ users }: UserListProps) {
 
 ### 5.2 React Hook Form + Server Actions 통합
 ```typescript
-// components/forms/sign-up-form.tsx
+// components/auth/sign-up-form.tsx
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -776,23 +759,16 @@ CREATE POLICY "Admins can view all users" ON users
   );
 ```
 
-### 6.2 환경변수 보안 관리 + 스키마 분리 (현재 프로젝트 기준)
+### 6.2 환경변수 보안 관리 (현재 프로젝트 기준)
 ```typescript
-// lib/env.ts - 환경변수 검증 (스키마 분리 지원)
+// lib/env.ts - 환경변수 검증
 import { z } from 'zod';
 
 const envSchema = z.object({
   // 공개 변수 (NEXT_PUBLIC_ 접두사) - 클라이언트에서 접근 가능
   NEXT_PUBLIC_SUPABASE_URL: z.string().url('유효한 Supabase URL이 필요합니다.'),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, 'Supabase Anon Key가 필요합니다.'),
-  
-  // 🎯 스키마 분리 핵심 설정
-  NEXT_PUBLIC_SUPABASE_SCHEMA: z.string().min(1, '프로젝트 스키마명이 필요합니다.'),
-  
-  // 환경별 스키마 (선택사항)
-  NEXT_PUBLIC_SUPABASE_SCHEMA_DEV: z.string().optional(),
-  NEXT_PUBLIC_SUPABASE_SCHEMA_STAGING: z.string().optional(),
-  NEXT_PUBLIC_SUPABASE_SCHEMA_PROD: z.string().optional(),
+  NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
   
   // 서버 전용 변수 - 절대 클라이언트에 노출되지 않음
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'Supabase Service Role Key가 필요합니다.').optional(),
@@ -803,43 +779,25 @@ const envSchema = z.object({
   // 선택적 변수들
   RESEND_API_KEY: z.string().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
-  WEBHOOK_SECRET: z.string().optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+  NEXT_PUBLIC_GA_ID: z.string().optional(),
 });
 
 // 서버 사이드에서만 사용 (SSR, API Routes, Server Actions)
 export const env = envSchema.parse(process.env);
 
-// 🎯 스키마 자동 선택 함수
-export function getCurrentSchema(): string {
-  const nodeEnv = env.NODE_ENV;
-  
-  if (nodeEnv === 'production' && env.NEXT_PUBLIC_SUPABASE_SCHEMA_PROD) {
-    return env.NEXT_PUBLIC_SUPABASE_SCHEMA_PROD;
-  }
-  
-  if (nodeEnv === 'development' && env.NEXT_PUBLIC_SUPABASE_SCHEMA_DEV) {
-    return env.NEXT_PUBLIC_SUPABASE_SCHEMA_DEV;
-  }
-  
-  return env.NEXT_PUBLIC_SUPABASE_SCHEMA;
-}
-
 // 클라이언트 사이드 전용 환경변수 (브라우저에서 접근 가능)
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-  NEXT_PUBLIC_SUPABASE_SCHEMA: z.string().min(1),
+  NEXT_PUBLIC_APP_URL: z.string().url(),
 });
 
 export const clientEnv = clientEnvSchema.parse({
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  NEXT_PUBLIC_SUPABASE_SCHEMA: process.env.NEXT_PUBLIC_SUPABASE_SCHEMA,
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
 });
-
-export function getCurrentSchemaClient(): string {
-  return clientEnv.NEXT_PUBLIC_SUPABASE_SCHEMA;
-}
 ```
 
 ### 6.3 입력 검증 3중 체계
@@ -848,17 +806,17 @@ export function getCurrentSchemaClient(): string {
 // 2단계: 서버 액션 (Server Actions + Zod)
 // 3단계: 데이터베이스 (RLS + Constraints)
 
-// lib/actions/update-user.ts
+// app/actions/update-user.ts
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { updateUserSchema } from '@/lib/schemas/user-schema';
-import { createClient } from '@/lib/database/server';
-import { getUser } from '@/lib/auth';
+import { updateUserSchema } from '@/lib/schemas/auth';
+import { createClient } from '@/lib/server';
+import { getCurrentUser } from '@/lib/queries/auth';
 
 export async function updateUser(formData: FormData) {
   // 인증 확인
-  const user = await getUser();
+  const user = await getCurrentUser();
   if (!user) {
     return { error: '인증이 필요합니다.' };
   }
@@ -878,12 +836,12 @@ export async function updateUser(formData: FormData) {
   
   // 인가 확인 (RLS로 처리되지만 추가 검증)
   const userId = formData.get('userId') as string;
-  if (user.id !== userId && !user.role?.includes('admin')) {
+  if (user.id !== userId) {
     return { error: '권한이 없습니다.' };
   }
   
   // 데이터베이스 업데이트 (RLS 정책 자동 적용)
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from('users')
     .update(validatedFields.data)
@@ -938,11 +896,8 @@ export async function updateUser(formData: FormData) {
 pnpm type-check  # TypeScript 검사
 pnpm lint       # ESLint 검사  
 pnpm build      # 빌드 가능성 검증
-
-# 🎯 스키마 분리 프로젝트 추가 검증
-pnpm run schema:init   # 스키마 초기화 확인
-pnpm run schema:list   # 스키마 목록 확인
-pnpm dev              # 개발 서버 정상 작동 확인
+pnpm validate   # 전체 검증 (타입+린트+빌드)
+pnpm dev        # 개발 서버 정상 작동 확인
 ```
 
 ### 배포 전 최종 점검
@@ -974,17 +929,22 @@ pnpm dev              # 개발 서버 정상 작동 확인
 
 ## 📖 프로젝트 현황 요약
 
-- **Next.js**: 15.3.4 (App Router, Server Components, Server Actions)
+- **Next.js**: 15.3.4 (App Router, Server Components, Server Actions, Turbopack)
 - **React**: 19.1.0 (최신 훅, Suspense, Concurrent Features)
 - **TypeScript**: Strict 모드 활성화
 - **TailwindCSS**: 4.0 (@theme inline, oklch 색상)
-- **Supabase**: SSR 지원, RLS 보안, **스키마 분리 지원**
+- **Supabase**: SSR 지원, RLS 보안, MCP Server 통합
 - **상태관리**: TanStack Query + Zustand
 - **폼**: React Hook Form + Zod 검증
 - **애니메이션**: Framer Motion
 - **UI**: Shadcn/UI + Radix 기반
 - **🎯 특화 기능**: 
-  - 스키마 자동 주입 시스템
+  - Supabase MCP Server 완전 통합
+  - 초보자 친화적 단순 구조
+  - AI 기반 개발 워크플로우
+  - 올인원 백엔드 솔루션
+
+**이 AXIOM 프로토콜은 우리의 완벽한 협업을 위한 단 하나의 '진리의 원천(Single Source of Truth)'입니다. 모든 코드 결정은 이 문서를 기준으로 이루어져야 하며, 예외는 허용되지 않습니다.** 🎯 
   - 환경별 스키마 분리
   - CLI 기반 마이그레이션 도구
   - 비용 최적화 멀티 프로젝트 지원
